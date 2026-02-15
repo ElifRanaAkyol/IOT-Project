@@ -31,6 +31,28 @@ bool pompaManuel  = true;
 
 int sinirDeger = 200;
 
+BLYNK_WRITE(V2) {
+  int secim = param.asInt(); // Menüden gelen indeks (0, 1, 2...)
+
+  switch (secim) {
+    case 0: // Kaktüs
+      sinirDeger = 50;
+      break;
+    case 1: // maydanoz
+      sinirDeger = 500;
+      break;
+    case 2: // Orkide
+      sinirDeger = 190;
+      break;
+    default:
+      sinirDeger = 200;
+      break;
+  }
+
+  
+  Serial.print("Yeni Nem Eşiği Atandı: %");
+  Serial.println(sinirDeger);
+}
 BlynkTimer timer;
 InfluxDBClient client(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
 Point sensorData("sulama_istatistikleri"); // Tablo adı
@@ -52,8 +74,8 @@ void veriGonder() {
   }
 
   // 2. Terminale Yazdır
-  Serial.print("NEM (%): ");
-  Serial.println(nemYuzde);
+  Serial.print("NEM : ");
+  Serial.println(tersnem);
   Serial.print("SU: ");
   Serial.println(suDurumuYuzde);
 
@@ -96,7 +118,7 @@ void setup() {
   if (client.validateConnection()) {
     Serial.println("InfluxDB Bağlantısı Başarılı");
   }// ÖNEMLİ: Zamanlayıcıyı kuruyoruz (Örn: 5 saniyede bir veri gönder)
-  timer.setInterval(2000L, veriGonder);
+  timer.setInterval(1000L, veriGonder);
 }
 
 void loop() {
